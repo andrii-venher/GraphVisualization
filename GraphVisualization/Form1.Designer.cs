@@ -33,13 +33,14 @@ namespace GraphVisualization
             this.graphToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newGraphToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.matrixToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.generateMatrixToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pictureBox = new System.Windows.Forms.PictureBox();
             this.dataGridViewPoints = new System.Windows.Forms.DataGridView();
             this.dataGridViewMatrix = new System.Windows.Forms.DataGridView();
             this.labelPoints = new System.Windows.Forms.Label();
             this.labelMatrix = new System.Windows.Forms.Label();
-            this.matrixToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.generateMatrixToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toSpanningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewPoints)).BeginInit();
@@ -69,16 +70,32 @@ namespace GraphVisualization
             // newGraphToolStripMenuItem
             // 
             this.newGraphToolStripMenuItem.Name = "newGraphToolStripMenuItem";
-            this.newGraphToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.newGraphToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
             this.newGraphToolStripMenuItem.Text = "Generate";
             this.newGraphToolStripMenuItem.Click += new System.EventHandler(this.newGraphToolStripMenuItem_Click);
             // 
             // clearToolStripMenuItem
             // 
             this.clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-            this.clearToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.clearToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
             this.clearToolStripMenuItem.Text = "Clear";
             this.clearToolStripMenuItem.Click += new System.EventHandler(this.clearToolStripMenuItem_Click);
+            // 
+            // matrixToolStripMenuItem
+            // 
+            this.matrixToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.generateMatrixToolStripMenuItem,
+            this.toSpanningToolStripMenuItem});
+            this.matrixToolStripMenuItem.Name = "matrixToolStripMenuItem";
+            this.matrixToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
+            this.matrixToolStripMenuItem.Text = "Matrix";
+            // 
+            // generateMatrixToolStripMenuItem
+            // 
+            this.generateMatrixToolStripMenuItem.Name = "generateMatrixToolStripMenuItem";
+            this.generateMatrixToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.generateMatrixToolStripMenuItem.Text = "Generate";
+            this.generateMatrixToolStripMenuItem.Click += new System.EventHandler(this.generateMatrixToolStripMenuItem_Click);
             // 
             // pictureBox
             // 
@@ -133,20 +150,12 @@ namespace GraphVisualization
             this.labelMatrix.TabIndex = 5;
             this.labelMatrix.Text = "Adjacency matrix";
             // 
-            // matrixToolStripMenuItem
+            // toSpanningToolStripMenuItem
             // 
-            this.matrixToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.generateMatrixToolStripMenuItem});
-            this.matrixToolStripMenuItem.Name = "matrixToolStripMenuItem";
-            this.matrixToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
-            this.matrixToolStripMenuItem.Text = "Matrix";
-            // 
-            // generateMatrixToolStripMenuItem
-            // 
-            this.generateMatrixToolStripMenuItem.Name = "generateMatrixToolStripMenuItem";
-            this.generateMatrixToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.generateMatrixToolStripMenuItem.Text = "Generate";
-            this.generateMatrixToolStripMenuItem.Click += new System.EventHandler(this.generateMatrixToolStripMenuItem_Click);
+            this.toSpanningToolStripMenuItem.Name = "toSpanningToolStripMenuItem";
+            this.toSpanningToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.toSpanningToolStripMenuItem.Text = "To spanning";
+            this.toSpanningToolStripMenuItem.Click += new System.EventHandler(this.toSpanningToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -186,6 +195,7 @@ namespace GraphVisualization
         private System.Windows.Forms.Label labelMatrix;
         private System.Windows.Forms.ToolStripMenuItem matrixToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem generateMatrixToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toSpanningToolStripMenuItem;
     }
 }
 

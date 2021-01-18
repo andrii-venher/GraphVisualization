@@ -1,20 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace GraphVisualization
 {
+    struct Edge
+    {
+        public MyPoint Point1;
+        public MyPoint Point2;
+        public int Weight;
+
+        public Edge(MyPoint point1, MyPoint point2, int weight)
+        {
+            Point1 = point1;
+            Point2 = point2;
+            Weight = weight;
+        }
+    }
+
+    struct MyPoint
+    {
+        public int Id;
+        public int X;
+        public int Y;
+
+        public MyPoint(int id, int x, int y)
+        {
+            Id = id;
+            X = x;
+            Y = y;
+        }
+    }
+
     public partial class Form1 : Form
     {
         private Bitmap bitmap;
-        private List<Point> points = new List<Point>();
+        private List<MyPoint> points = new List<MyPoint>();
+        private List<Edge> edges = new List<Edge>();
         private Graphics graphics;
 
         private const int Radius = 6;
@@ -35,12 +59,12 @@ namespace GraphVisualization
             dataGridViewMatrix.RowHeadersWidth = 50;
         }
 
-        private int EdgeLength(Point point1, Point point2)
+        private int EdgeLength(MyPoint point1, MyPoint point2)
         {
             return (int) Math.Sqrt(Math.Pow(point1.X - point2.X, 2) + Math.Pow(point1.Y - point2.Y, 2));
         }
 
-        private void DrawPoint(Point point, string text)
+        private void DrawPoint(MyPoint point, string text)
         {
             graphics.FillEllipse(new SolidBrush(Color.Red),
                 point.X - Radius, point.Y - Radius, Radius * 2, Radius * 2);
@@ -49,35 +73,113 @@ namespace GraphVisualization
             pictureBox.Image = bitmap;
         }
 
-        private void GenerateMatrix()
+        private void FillMatrix(int number)
         {
-            ClearMatrix();
-
-            for (int i = 0; i < points.Count; i++)
-            {
-                DataGridViewColumn column = new DataGridViewTextBoxColumn();
-                column.Name = $"{i}";
-                column.Width = 25;
-                dataGridViewMatrix.Columns.Add(column);
-            }
-
-            for (int i = 0; i < points.Count; i++)
-            {
-                dataGridViewMatrix.Rows.Add();
-                dataGridViewMatrix.Rows[i].HeaderCell.Value = $"{i}";
-            }
-
             for (int i = 0; i < points.Count; i++)
             {
                 for (int j = 0; j < points.Count; j++)
                 {
-                    dataGridViewMatrix.Rows[i].Cells[j].Value = (i < j) ? 1 : 0;
+                    dataGridViewMatrix.Rows[i].Cells[j].Value = (i < j) ? number : 0;
                 }
             }
+        }
+
+        private void GenerateMatrix()
+        {
+            ClearMatrix();
+
+            foreach (var point in points)
+            {
+                DataGridViewColumn column = new DataGridViewTextBoxColumn();
+                column.Name = $"{point.Id}";
+                column.Width = 25;
+                dataGridViewMatrix.Columns.Add(column);
+            }
+
+            foreach (var point in points)
+            {
+                dataGridViewMatrix.Rows.Add();
+                dataGridViewMatrix.Rows[dataGridViewMatrix.Rows.Count - 1].HeaderCell.Value = $"{point.Id}";
+            }
+
+            FillMatrix(1);
 
             foreach (DataGridViewColumn column in dataGridViewMatrix.Columns)
             {
                 column.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            }
+        }
+
+        private void GenerateEdges()
+        {
+            edges.Clear();
+            for (int i = 0; i < points.Count; i++)
+            {
+                for (int j = 0; j < points.Count; j++)
+                {
+                    if (i != j && Convert.ToInt32(dataGridViewMatrix.Rows[i].Cells[j].Value) == 1)
+                    {
+                        MyPoint p1 = new MyPoint(points[i].Id, points[i].X, points[i].Y);
+                        MyPoint p2 = new MyPoint(points[j].Id, points[j].X, points[j].Y);
+                        edges.Add(new Edge(p1, p2, EdgeLength(p1, p2)));
+                    }
+                }
+            }
+        }
+
+        private void ToSpanning()
+        {
+            if(edges.Count == 0)
+                return;
+            List<Edge> notUsedEdges = new List<Edge>(edges);
+            List<MyPoint> usedPoints = new List<MyPoint>();
+            List<MyPoint> notUsedPoints = new List<MyPoint>();
+            foreach (var edge in edges)
+            {
+                if (!notUsedPoints.Contains(edge.Point1))
+                    notUsedPoints.Add(edge.Point1);
+                if (!notUsedPoints.Contains(edge.Point2))
+                    notUsedPoints.Add(edge.Point2);
+            }
+            edges.Clear();
+            usedPoints.Add(notUsedPoints[0]);
+            notUsedPoints.RemoveAt(0);
+            while (notUsedPoints.Count > 0)
+            {
+                int minimumEdge = -1;
+                for (int i = 0; i < notUsedEdges.Count; i++)
+                {
+                    if ((usedPoints.IndexOf(notUsedEdges[i].Point1) != -1) && (notUsedPoints.IndexOf(notUsedEdges[i].Point2) != -1) ||
+                        (usedPoints.IndexOf(notUsedEdges[i].Point2) != -1) && (notUsedPoints.IndexOf(notUsedEdges[i].Point1) != -1))
+                    {
+                        if (minimumEdge != -1)
+                        {
+                            if (notUsedEdges[i].Weight < notUsedEdges[minimumEdge].Weight)
+                                minimumEdge = i;
+                        }
+                        else
+                            minimumEdge = i;
+                    }
+                }
+                if (usedPoints.IndexOf(notUsedEdges[minimumEdge].Point1) != -1)
+                {
+                    usedPoints.Add(notUsedEdges[minimumEdge].Point2);
+                    notUsedPoints.Remove(notUsedEdges[minimumEdge].Point2);
+                }
+                else
+                {
+                    usedPoints.Add(notUsedEdges[minimumEdge].Point1);
+                    notUsedPoints.Remove(notUsedEdges[minimumEdge].Point1);
+                }
+                edges.Add(notUsedEdges[minimumEdge]);
+                notUsedEdges.RemoveAt(minimumEdge);
+            }
+
+            FillMatrix(0);
+
+            foreach (var edge in edges)
+            {
+                dataGridViewMatrix.Rows[edge.Point1.Id].Cells[edge.Point2.Id].Value = 1;
             }
         }
 
@@ -91,27 +193,18 @@ namespace GraphVisualization
 
         private void DrawEdges()
         {
-            Point p1 = new Point();
-            Point p2 = new Point();
-            for (int i = 0; i < points.Count; i++)
+            foreach (var edge in edges)
             {
-                for (int j = 0; j < points.Count; j++)
-                {
-                    if (i != j && Convert.ToInt32(dataGridViewMatrix.Rows[i].Cells[j].Value) == 1)
-                    {
-                        p1.X = points[i].X;
-                        p1.Y = points[i].Y;
-                        p2.X = points[j].X;
-                        p2.Y = points[j].Y;
-                        var label = EdgeLength(p1, p2).ToString();
-                        var font = new Font(FontName, EdgeLabelFontSize);
-                        var size = graphics.MeasureString(label, font, pictureBox.Size);
-                        graphics.DrawLine(new Pen(Color.Chartreuse, EdgeThickness), p1, p2);
-                        graphics.DrawString(label, 
-                            font, new SolidBrush(Color.Black), 
-                            (p1.X + p2.X) / 2 - size.Width / 2, (p1.Y + p2.Y) / 2 - size.Height / 2);
-                    }
-                }
+                MyPoint p1 = edge.Point1;
+                MyPoint p2 = edge.Point2;
+                var label = EdgeLength(p1, p2).ToString();
+                var font = new Font(FontName, EdgeLabelFontSize);
+                var size = graphics.MeasureString(label, font, pictureBox.Size);
+                graphics.DrawLine(new Pen(Color.Chartreuse, EdgeThickness), 
+                    new Point(p1.X, p1.Y), new Point(p2.X, p2.Y));
+                graphics.DrawString(label,
+                    font, new SolidBrush(Color.Black),
+                    (p1.X + p2.X) / 2 - size.Width / 2, (p1.Y + p2.Y) / 2 - size.Height / 2);
             }
         }
 
@@ -133,8 +226,8 @@ namespace GraphVisualization
         {
             int x = MousePosition.X - Location.X - pictureBox.Location.X - 8;
             int y = MousePosition.Y - Location.Y - pictureBox.Location.Y - 32;
-            points.Add(new Point(x, y));
-            dataGridViewPoints.Rows.Add(dataGridViewPoints.Rows.Count, $"({x}; {y})");
+            points.Add(new MyPoint(points.Count, x, y));
+            dataGridViewPoints.Rows.Add(points[points.Count - 1].Id, $"({x}; {y})");
             DrawPoint(points[points.Count - 1], $"{points.Count - 1}");
         }
 
@@ -142,6 +235,7 @@ namespace GraphVisualization
         {
             if (dataGridViewMatrix.Rows.Count < dataGridViewPoints.Rows.Count)
                 GenerateMatrix();
+            GenerateEdges();
             DrawEdges();
             Invalidate();
         }
@@ -155,6 +249,14 @@ namespace GraphVisualization
         private void generateMatrixToolStripMenuItem_Click(object sender, EventArgs e)
         {
             GenerateMatrix();
+        }
+
+        private void toSpanningToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (dataGridViewMatrix.Rows.Count < dataGridViewPoints.Rows.Count)
+                GenerateMatrix();
+            GenerateEdges();
+            ToSpanning();
         }
 
         protected override void OnPaint(PaintEventArgs e)
