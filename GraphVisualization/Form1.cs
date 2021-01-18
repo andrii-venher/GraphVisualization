@@ -127,7 +127,7 @@ namespace GraphVisualization
             }
         }
 
-        private void ToSpanning()
+        private void ToMST()
         {
             if(edges.Count == 0)
                 return;
@@ -256,7 +256,7 @@ namespace GraphVisualization
             if (dataGridViewMatrix.Rows.Count < dataGridViewPoints.Rows.Count)
                 GenerateMatrix();
             GenerateEdges();
-            ToSpanning();
+            ToMST();
         }
 
         protected override void OnPaint(PaintEventArgs e)

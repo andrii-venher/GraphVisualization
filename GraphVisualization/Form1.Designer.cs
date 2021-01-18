@@ -35,12 +35,12 @@ namespace GraphVisualization
             this.clearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.matrixToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.generateMatrixToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toSpanningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pictureBox = new System.Windows.Forms.PictureBox();
             this.dataGridViewPoints = new System.Windows.Forms.DataGridView();
             this.dataGridViewMatrix = new System.Windows.Forms.DataGridView();
             this.labelPoints = new System.Windows.Forms.Label();
             this.labelMatrix = new System.Windows.Forms.Label();
-            this.toSpanningToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewPoints)).BeginInit();
@@ -97,6 +97,13 @@ namespace GraphVisualization
             this.generateMatrixToolStripMenuItem.Text = "Generate";
             this.generateMatrixToolStripMenuItem.Click += new System.EventHandler(this.generateMatrixToolStripMenuItem_Click);
             // 
+            // toSpanningToolStripMenuItem
+            // 
+            this.toSpanningToolStripMenuItem.Name = "toSpanningToolStripMenuItem";
+            this.toSpanningToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.toSpanningToolStripMenuItem.Text = "To MST";
+            this.toSpanningToolStripMenuItem.Click += new System.EventHandler(this.toSpanningToolStripMenuItem_Click);
+            // 
             // pictureBox
             // 
             this.pictureBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -149,13 +156,6 @@ namespace GraphVisualization
             this.labelMatrix.Size = new System.Drawing.Size(87, 13);
             this.labelMatrix.TabIndex = 5;
             this.labelMatrix.Text = "Adjacency matrix";
-            // 
-            // toSpanningToolStripMenuItem
-            // 
-            this.toSpanningToolStripMenuItem.Name = "toSpanningToolStripMenuItem";
-            this.toSpanningToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.toSpanningToolStripMenuItem.Text = "To spanning";
-            this.toSpanningToolStripMenuItem.Click += new System.EventHandler(this.toSpanningToolStripMenuItem_Click);
             // 
             // Form1
             // 
